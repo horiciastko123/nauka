@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nauka Niemieckich Czasowników</title>    <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --text-color: #333;
+            --container-bg: white;
+            --container-shadow: rgba(0, 0, 0, 0.1);
+            --heading-color: #2c3e50;
+            --input-bg: white;
+            --input-border: #ddd;
+            --correct-color: #27ae60;
+            --incorrect-color: #c0392b;
+            --hint-color: #7f8c8d;
+            --stats-bg: #ecf0f1;
+            --progress-bg: #e9ecef;
+            --help-bg: #f8f9fa;
+            --vocabulary-bg: #f8f9fa;
+            --vocabulary-border: #ddd;
+            --btn-primary-bg: #3498db;
+            --btn-primary-color: white;
+            --btn-hover-bg: #2980b9;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --text-color: #e0e0e0;
+                --container-bg: #1e1e1e;
+                --container-shadow: rgba(0, 0, 0, 0.3);
+                --heading-color: #81a1c1;
+                --input-bg: #2e2e2e;
+                --input-border: #555;
+                --correct-color: #4eca7a;
+                --incorrect-color: #e06c75;
+                --hint-color: #a0a0a0;
+                --stats-bg: #2a2a2a;
+                --progress-bg: #333;
+                --help-bg: #252525;
+                --vocabulary-bg: #252525;
+                --vocabulary-border: #555;
+                --btn-primary-bg: #4c8dae;
+                --btn-primary-color: #e0e0e0;
+                --btn-hover-bg: #5f9fc2;
+            }
+        }
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 0 auto;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        /* Responsywność dla urządzeń mobilnych */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+            
+            .container {
+                padding: 15px;
+                margin-bottom: 15px;
+                border-radius: 6px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            
+            h1 {
+                font-size: 1.3em;
+                margin-bottom: 15px;
+            }
+            
+            .container {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--heading-color);
+            margin-bottom: 30px;
+        }
+        
+        .container {
+            background-color: var(--container-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px var(--container-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }        .block-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .block-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s, opacity 0.1s;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        /* Responsywność dla przycisków bloków */
+        @media (max-width: 768px) {
+            .block-selector {
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+            
+            .block-btn {
+                padding: 12px 10px;
+                font-size: 14px;
+                min-width: 100px;
+                flex: 1 1 calc(50% - 4px);
+                max-width: calc(50% - 4px);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .block-selector {
+                gap: 6px;
+                margin-bottom: 10px;
+            }
+            
+            .block-btn {
+                padding: 10px 8px;
+                font-size: 12px;
+                min-width: 80px;
+                flex: 1 1 calc(50% - 3px);
+                max-width: calc(50% - 3px);
+            }
+        }
+        
+        .block-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .block-btn:active {
+            transform: translateY(0);
+            opacity: 0.8;
+        }
+        
+        .block-btn-1 { background-color: #3498db; color: white; }
+        .block-btn-2 { background-color: #2ecc71; color: white; }
+        .block-btn-3 { background-color: #f1c40f; color: #333; }
+        .block-btn-4 { background-color: #e74c3c; color: white; }
+        .block-btn-5 { background-color: #9b59b6; color: white; }
+        .block-btn-all { background-color: #34495e; color: white; }
+          .learning-area {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .word-display {
+            font-size: 24px;
+            margin-bottom: 20px;
+            min-height: 36px;
+        }
+        
+        .polish-word {
+            font-weight: bold;
+            color: var(--heading-color);
+        }
+        
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .form-label {
+            width: 120px;
+            text-align: right;
+            font-weight: bold;
+        }
+        
+        input {
+            padding: 8px 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            width: 200px;
+            font-size: 16px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+        }
+        
+        /* Responsywność dla obszaru nauki */
+        @media (max-width: 768px) {
+            .learning-area {
+                margin-top: 15px;
+            }
+            
+            .word-display {
+                font-size: 20px;
+                margin-bottom: 15px;
+                min-height: 30px;
+            }
+            
+            .input-area {
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+            
+            .form-group {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .form-label {
+                width: auto;
+                text-align: center;
+                font-size: 14px;
+            }
+            
+            input {
+                width: 100%;
+                max-width: 280px;
+                font-size: 16px;
+                padding: 10px 12px;
+            }
+            
+            button {
+                padding: 12px 20px;
+                font-size: 16px;
+                margin: 5px;
+                min-width: 120px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .word-display {
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+            
+            .input-area {
+                gap: 6px;
+                margin-bottom: 12px;
+            }
+            
+            .form-label {
+                font-size: 13px;
+            }
+            
+            input {
+                max-width: 100%;
+                font-size: 16px;
+                padding: 12px;
+            }
+            
+            button {
+                padding: 14px 20px;
+                font-size: 16px;
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+        
+        button {
+            padding: 10px 15px;
+            background-color: var(--btn-primary-bg);
+            color: var(--btn-primary-color);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: var(--btn-hover-bg);
+        }
+        
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+            min-height: 27px;
+        }
+        
+        .correct {
+            color: var(--correct-color);
+            font-weight: bold;
+        }
+        
+        .incorrect {
+            color: var(--incorrect-color);
+            font-weight: bold;
+        }        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            background-color: var(--stats-bg);
+            border-radius: 4px;
+            padding: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--heading-color);
+        }
+        
+        /* Responsywność dla statystyk */
+        @media (max-width: 768px) {
+            .stats {
+                margin-top: 15px;
+                padding: 8px;
+                gap: 5px;
+            }
+            
+            .stat-item {
+                font-size: 14px;
+            }
+            
+            .stat-value {
+                font-size: 20px;
+            }
+            
+            .result {
+                font-size: 16px;
+                margin-top: 15px;
+                min-height: 24px;
+                padding: 0 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats {
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 10px 5px;
+            }
+            
+            .stat-item {
+                flex: 1 1 calc(50% - 5px);
+                min-width: calc(50% - 5px);
+                font-size: 13px;
+            }
+            
+            .stat-value {
+                font-size: 18px;
+            }
+            
+            .result {
+                font-size: 15px;
+                margin-top: 12px;
+                line-height: 1.4;
+            }
+        }
+        
+        .hint {
+            color: var(--hint-color);
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+        }
+        
+        .verb-progress {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: var(--help-bg);
+            border-radius: 4px;
+            border: 1px solid var(--input-border);
+        }
+        
+        .progress-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar-container {
+            height: 20px;
+            background-color: var(--progress-bg);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--btn-primary-bg);
+            transition: width 0.3s ease;
+        }
+        
+        .help-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--help-bg);
+            border-radius: 4px;
+            border-left: 4px solid var(--btn-primary-bg);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .show-vocabulary {
+            margin-top: 10px;
+            text-align: right;
+        }
+        
+        .vocabulary-toggle {
+            background-color: transparent;
+            color: var(--hint-color);
+            border: 1px solid var(--input-border);
+            font-size: 14px;
+        }
+        
+        .vocabulary-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background-color: var(--vocabulary-bg);
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        .vocabulary-list.show {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid var(--vocabulary-border);
+        }
+        
+        .vocabulary-item {
+            padding: 5px 0;
+            border-bottom: 1px solid var(--input-border);
+        }
+        
+        .vocabulary-item:last-child {
+            border-bottom: none;
+        }
+          .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: 1px solid var(--input-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            background-color: var(--stats-bg);
+        }
+        
+        /* Responsywność dla przełącznika motywu */
+        @media (max-width: 768px) {
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                width: 35px;
+                height: 35px;
+            }
+            
+            .help-section {
+                margin-top: 15px;
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .help-section h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+            
+            .help-section ol {
+                padding-left: 18px;
+            }
+            
+            .verb-progress {
+                margin-top: 15px;
+                padding: 8px;
+            }
+            
+            .progress-title {
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
+            
+            .show-vocabulary {
+                margin-top: 8px;
+                text-align: center;
+            }
+            
+            .vocabulary-toggle {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .theme-toggle {
+                top: 5px;
+                right: 5px;
+                width: 32px;
+                height: 32px;
+            }
+            
+            .help-section {
+                margin-top: 10px;
+                padding: 10px;
+                font-size: 13px;
+            }
+            
+            .help-section h3 {
+                font-size: 15px;
+            }
+            
+            .verb-progress {
+                margin-top: 10px;
+                padding: 6px;
+            }
+            
+            .progress-title {
+                font-size: 13px;
+            }
+            
+            .vocabulary-toggle {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+        }
+          .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .tutorial-overlay.hidden {
+            display: none !important;
+        }
+        
+        .tutorial-content {
+            background-color: var(--container-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            padding: 30px;
+            max-width: 80%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .tutorial-step {
+            margin-bottom: 20px;
+        }
+        
+        /* Responsywność dla samouczka */
+        @media (max-width: 768px) {
+            .tutorial-content {
+                max-width: 95%;
+                max-height: 90vh;
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .tutorial-step {
+                margin-bottom: 15px;
+            }
+            
+            .tutorial-step h2 {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+            
+            .tutorial-step p, .tutorial-step li {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            
+            .tutorial-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .tutorial-nav-btn {
+                width: 100%;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tutorial-content {
+                max-width: 98%;
+                max-height: 95vh;
+                padding: 15px;
+                margin: 5px;
+                border-radius: 6px;
+            }
+            
+            .tutorial-step h2 {
+                font-size: 16px;
+            }
+            
+            .tutorial-step p, .tutorial-step li {
+                font-size: 13px;
+            }
+            
+            .tutorial-nav-btn {
+                padding: 14px 16px;
+                font-size: 15px;
+            }
+        }
+        
+        .tutorial-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+          .tutorial-nav-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid var(--btn-primary-bg);
+            background-color: var(--btn-primary-bg);
+            color: var(--btn-primary-color);
+        }
+        
+        .tutorial-skip {
+            background-color: transparent !important;
+            border: 1px solid var(--input-border) !important;
+            color: var(--text-color) !important;
+        }
+        
+        .tutorial-example {
+            border: 1px dashed var(--input-border);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid var(--input-border);
+            box-shadow: 0 4px 8px var(--container-shadow);
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        /* Usprawnienia dotykowe dla urządzeń mobilnych */
+        @media (max-width: 768px) {
+            /* Większe obszary dotykowe */
+            .block-btn:hover {
+                transform: none; /* Wyłączamy hover efekty na mobile */
+            }
+            
+            .block-btn:active {
+                transform: scale(0.95);
+                opacity: 0.8;
+            }
+            
+            /* Lepsze dotykanie przycisków */
+            button {
+                min-height: 44px; /* Apple guidelines */
+                touch-action: manipulation; /* Zapobiega zoom przy tap */
+            }
+            
+            input {
+                min-height: 44px;
+                touch-action: manipulation;
+            }
+            
+            /* Zapobieganie zoom przy focus na input */
+            input:focus {
+                outline: 2px solid var(--btn-primary-bg);
+                outline-offset: 2px;
+            }
+        }
+        
+        /* Dodatkowe usprawnienia dla bardzo małych ekranów */
+        @media (max-width: 320px) {
+            body {
+                padding: 3px;
+            }
+            
+            .container {
+                padding: 8px;
+            }
+            
+            h1 {
+                font-size: 1.2em;
+            }
+            
+            .word-display {
+                font-size: 16px;
+            }
+            
+            input {
+                font-size: 16px; /* Zapobiega zoom na iOS */
+                padding: 14px 12px;
+            }
+            
+            button {
+                padding: 16px 20px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>    <h1>Nauka Niemieckich Czasowników</h1>
+    
+    <button id="theme-toggle" class="theme-toggle" title="Zmień motyw">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+    
+    <div class="container">
+        <div class="block-selector">
+            <button class="block-btn block-btn-1" data-block="1">Blok 1 (1-12)</button>
+            <button class="block-btn block-btn-2" data-block="2">Blok 2 (13-24)</button>
+            <button class="block-btn block-btn-3" data-block="3">Blok 3 (25-36)</button>
+            <button class="block-btn block-btn-4" data-block="4">Blok 4 (37-48)</button>
+            <button class="block-btn block-btn-5" data-block="5">Blok 5 (49-60)</button>
+            <button class="block-btn block-btn-all" data-block="all">Wszystkie</button>
+        </div>
+        
+        <div class="learning-area hidden">
+            <div class="word-display">
+                <div class="polish-word"></div>
+            </div>
+            
+            <div class="input-area">                <div class="form-group">
+                    <div class="form-label">Bezokolicznik:</div>
+                    <input type="text" id="infinitive" placeholder="np. gehen">
+                    <div class="tooltip">?
+                        <span class="tooltip-text">Podstawowa forma czasownika (odpowiada na pytanie: co robić?)</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-label">Präteritum:</div>
+                    <input type="text" id="preterite" placeholder="np. ging">
+                    <div class="tooltip">?
+                        <span class="tooltip-text">Forma czasu przeszłego prostego (używana głównie w tekstach pisanych)</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-label">Perfekt:</div>
+                    <input type="text" id="perfect" placeholder="np. gegangen">
+                    <div class="tooltip">?
+                        <span class="tooltip-text">Forma imiesłowu czasu przeszłego (używana do tworzenia czasu Perfekt)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="check-btn">Sprawdź</button>
+            <button id="next-btn" class="hidden">Następne słowo</button>
+            
+            <div class="result"></div>
+            <div class="feedback hidden"></div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div>Punkty</div>
+                    <div class="stat-value" id="points">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>Poprawne</div>
+                    <div class="stat-value" id="correct">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>Błędne</div>
+                    <div class="stat-value" id="incorrect">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>Pozostało</div>
+                    <div class="stat-value" id="remaining">0</div>
+                </div>
+            </div>
+            
+            <div class="verb-progress">
+                <div class="progress-title">Postęp nauki:</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="show-vocabulary">
+                <button class="vocabulary-toggle">Pokaż słownictwo</button>
+            </div>
+            
+            <div class="vocabulary-list">
+                <!-- Tutaj będzie dynamicznie generowana lista słownictwa -->
+            </div>
+        </div>
+          <div class="start-info">
+            <h2>Witaj w aplikacji do nauki niemieckich czasowników nieregularnych!</h2>
+            <p>Ta aplikacja pomoże Ci nauczyć się niemieckich czasowników nieregularnych w ich trzech podstawowych formach: bezokolicznik (Infinitiv), czas przeszły prosty (Präteritum) i imiesłów czasu przeszłego (Perfekt).</p>
+            <p>Aby rozpocząć naukę, wybierz jeden z bloków powyżej. Zobaczysz polskie tłumaczenie, a Twoim zadaniem będzie wpisanie trzech form niemieckiego czasownika.</p>
+            <p>Za każdą poprawną odpowiedź otrzymasz punkty. Im więcej form podasz poprawnie, tym więcej punktów zdobędziesz!</p>
+            <p>Powodzenia w nauce! 🎓</p>
+            <button id="start-tutorial" class="tutorial-nav-btn">Pokaż samouczek</button>
+        </div>
+    </div>    <div class="help-section">
+        <h3>Jak korzystać z aplikacji?</h3>
+        <ol>
+            <li>Wybierz blok czasowników, których chcesz się uczyć.</li>
+            <li>Zobaczysz polskie znaczenie czasownika.</li>
+            <li>Wpisz trzy formy niemieckiego czasownika (bezokolicznik, Präteritum, Perfekt).</li>
+            <li>Naciśnij "Sprawdź", aby sprawdzić swoje odpowiedzi.</li>
+            <li>Zobaczysz, które formy są poprawne, a które nie.</li>
+            <li>Naciśnij "Następne słowo", aby przejść do kolejnego czasownika.</li>
+        </ol>
+        <p><strong>System nauki adaptacyjnej:</strong> Na początku wszystkie słowa bloku są dodawane do puli nauki. Aby usunąć słówko z puli, musisz podać wszystkie trzy formy poprawnie dwa razy. Każda niepoprawna odpowiedź resetuje licznik dla danego słowa.</p>
+        <p>Wskazówka: Możesz użyć klawisza Tab, aby przechodzić między polami, a Enter, aby sprawdzić odpowiedzi.</p>
+    </div>
+    
+    <!-- Samouczek -->
+    <div id="tutorial-overlay" class="tutorial-overlay hidden">
+        <div class="tutorial-content">
+            <div id="tutorial-step-1" class="tutorial-step">
+                <h2>Podstawy języka niemieckiego - Wprowadzenie</h2>
+                <p>Witaj w samouczku! Zanim zaczniesz naukę czasowników nieregularnych, poznaj kilka podstawowych informacji o języku niemieckim:</p>
+                <ul>
+                    <li>W języku niemieckim wszystkie rzeczowniki piszemy <strong>wielką literą</strong> (np. das Haus - dom)</li>
+                    <li>Czasowniki (które będziesz się uczyć w tej aplikacji) opisują czynności</li>
+                    <li>Czasowniki nieregularne zmieniają swoją formę w różnych czasach w sposób, który trzeba po prostu zapamiętać</li>
+                </ul>
+            </div>
+            
+            <div id="tutorial-step-2" class="tutorial-step hidden">
+                <h2>Trzy formy czasownika</h2>
+                <p>W tej aplikacji będziesz uczyć się trzech form każdego czasownika:</p>
+                <ol>
+                    <li><strong>Bezokolicznik (Infinitiv)</strong> - podstawowa forma czasownika, np. "gehen" (iść)</li>
+                    <li><strong>Präteritum</strong> - forma czasu przeszłego używana głównie w języku pisanym, np. "ging" (szedł)</li>
+                    <li><strong>Perfekt</strong> - imiesłów czasu przeszłego używany do tworzenia czasu Perfekt, np. "gegangen" (poszedł)</li>
+                </ol>
+                <p>Przykład pełnego zdania z czasem Perfekt: "Ich bin nach Hause gegangen" (Poszedłem do domu)</p>
+            </div>
+            
+            <div id="tutorial-step-3" class="tutorial-step hidden">
+                <h2>Jak korzystać z aplikacji</h2>
+                <p>Oto jak działa nasza aplikacja:</p>
+                <ol>
+                    <li>Wybierz blok czasowników, których chcesz się uczyć</li>
+                    <li>Zobaczysz polskie tłumaczenie czasownika</li>
+                    <li>Wpisz trzy formy niemieckiego czasownika w odpowiednich polach</li>
+                    <li>Kliknij "Sprawdź", aby sprawdzić swoje odpowiedzi</li>
+                </ol>
+                <div class="tutorial-example">
+                    <p>Przykład:</p>
+                    <p>Polskie słowo: <strong>iść</strong></p>
+                    <p>Poprawne odpowiedzi:</p>
+                    <ul>
+                        <li>Bezokolicznik: <strong>gehen</strong></li>
+                        <li>Präteritum: <strong>ging</strong></li>
+                        <li>Perfekt: <strong>gegangen</strong></li>
+                    </ul>
+                </div>
+            </div>
+              <div id="tutorial-step-4" class="tutorial-step hidden">
+                <h2>System adaptacyjnych powtórek</h2>
+                <p>Nasza aplikacja wykorzystuje inteligentny system adaptacyjnych powtórek:</p>
+                <ul>
+                    <li><strong>Słowo musi być odpowiedziane poprawnie 2 razy z rzędu</strong>, aby zostało uznane za opanowane</li>
+                    <li>Każda błędna odpowiedź resetuje licznik poprawnych odpowiedzi dla danego słowa</li>
+                    <li>Słowa, które sprawiają trudność, trafiają na listę powtórek</li>
+                    <li>System automatycznie skupia się na słowach, które sprawiają Ci najwięcej problemów</li>
+                    <li>Po opanowaniu wszystkich słów z bloku, blok zostaje oznaczony jako ukończony</li>
+                </ul>
+                <p>Dzięki temu systemowi skupiasz się na słowach, które naprawdę wymagają powtórzenia, a nie tracisz czasu na te, które już dobrze znasz!</p>
+            </div>
+            
+            <div id="tutorial-step-5" class="tutorial-step hidden">
+                <h2>Wskazówki do nauki</h2>
+                <p>Oto kilka wskazówek, które pomogą Ci w nauce niemieckich czasowników:</p>
+                <ul>
+                    <li>Ucz się regularnie, najlepiej codziennie po 10-15 minut</li>
+                    <li>Zwracaj uwagę na wzorce - wiele czasowników ma podobne zmiany form</li>
+                    <li>Używaj nauczonych czasowników w zdaniach, aby lepiej je zapamiętać</li>
+                    <li>Nie zniechęcaj się błędami - są naturalną częścią procesu nauki</li>
+                    <li>Możesz zawsze sprawdzić listę słownictwa, klikając przycisk "Pokaż słownictwo"</li>
+                </ul>
+            </div><div class="tutorial-buttons">
+                <button id="tutorial-prev" class="tutorial-nav-btn" disabled>Wstecz</button>
+                <button id="tutorial-skip" class="tutorial-nav-btn tutorial-skip">Pomiń samouczek</button>
+                <button id="tutorial-next" class="tutorial-nav-btn">Dalej</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Baza danych czasowników
+        const verbBlocks = {
+            1: [
+                { infinitive: "backen", preterite: "buk", perfect: "gebacken", polish: "piec" },
+                { infinitive: "beginnen", preterite: "begann", perfect: "begonnen", polish: "zaczynać" },
+                { infinitive: "bitten", preterite: "bat", perfect: "gebeten", polish: "prosić" },
+                { infinitive: "bleiben", preterite: "blieb", perfect: "geblieben", polish: "zostawać" },
+                { infinitive: "bringen", preterite: "brachte", perfect: "gebracht", polish: "przynosić" },
+                { infinitive: "denken", preterite: "dachte", perfect: "gedacht", polish: "myśleć" },
+                { infinitive: "dürfen", preterite: "durfte", perfect: "gedurft", polish: "mieć pozwolenie" },
+                { infinitive: "essen", preterite: "aß", perfect: "gegessen", polish: "jeść" },
+                { infinitive: "fahren", preterite: "fuhr", perfect: "gefahren", polish: "jechać" },
+                { infinitive: "fallen", preterite: "fiel", perfect: "gefallen", polish: "upadać" },
+                { infinitive: "fangen", preterite: "fing", perfect: "gefangen", polish: "łapać" },
+                { infinitive: "finden", preterite: "fand", perfect: "gefunden", polish: "znajdować" }
+            ],
+            2: [
+                { infinitive: "fliegen", preterite: "flog", perfect: "geflogen", polish: "latać" },
+                { infinitive: "geben", preterite: "gab", perfect: "gegeben", polish: "dawać" },
+                { infinitive: "gehen", preterite: "ging", perfect: "gegangen", polish: "iść" },
+                { infinitive: "geschehen", preterite: "geschah", perfect: "geschehen", polish: "wydarzyć się" },
+                { infinitive: "gewinnen", preterite: "gewann", perfect: "gewonnen", polish: "wygrywać" },
+                { infinitive: "haben", preterite: "hatte", perfect: "gehabt", polish: "mieć" },
+                { infinitive: "halten", preterite: "hielt", perfect: "gehalten", polish: "trzymać" },
+                { infinitive: "heißen", preterite: "hieß", perfect: "geheißen", polish: "nazywać się" },
+                { infinitive: "helfen", preterite: "half", perfect: "geholfen", polish: "pomagać" },
+                { infinitive: "kennen", preterite: "kannte", perfect: "gekannt", polish: "znać" },
+                { infinitive: "kommen", preterite: "kam", perfect: "gekommen", polish: "przychodzić" },
+                { infinitive: "können", preterite: "konnte", perfect: "gekonnt", polish: "móc, potrafić" }
+            ],
+            3: [
+                { infinitive: "laufen", preterite: "lief", perfect: "gelaufen", polish: "biegać" },
+                { infinitive: "leihen", preterite: "lieh", perfect: "geliehen", polish: "pożyczać" },
+                { infinitive: "lesen", preterite: "las", perfect: "gelesen", polish: "czytać" },
+                { infinitive: "liegen", preterite: "lag", perfect: "gelegen", polish: "leżeć" },
+                { infinitive: "nehmen", preterite: "nahm", perfect: "genommen", polish: "brać" },
+                { infinitive: "raten", preterite: "riet", perfect: "geraten", polish: "radzić" },
+                { infinitive: "reiten", preterite: "ritt", perfect: "geritten", polish: "jechać konno" },
+                { infinitive: "rufen", preterite: "rief", perfect: "gerufen", polish: "wołać" },
+                { infinitive: "schlafen", preterite: "schlief", perfect: "geschlafen", polish: "spać" },
+                { infinitive: "schlagen", preterite: "schlug", perfect: "geschlagen", polish: "bić" },
+                { infinitive: "schließen", preterite: "schloss", perfect: "geschlossen", polish: "zamykać" },
+                { infinitive: "schneiden", preterite: "schnitt", perfect: "geschnitten", polish: "kroić" }
+            ],
+            4: [
+                { infinitive: "schreiben", preterite: "schrieb", perfect: "geschrieben", polish: "pisać" },
+                { infinitive: "schwimmen", preterite: "schwamm", perfect: "geschwommen", polish: "pływać" },
+                { infinitive: "sehen", preterite: "sah", perfect: "gesehen", polish: "widzieć" },
+                { infinitive: "sein", preterite: "war", perfect: "gewesen", polish: "być" },
+                { infinitive: "singen", preterite: "sang", perfect: "gesungen", polish: "śpiewać" },
+                { infinitive: "sitzen", preterite: "saß", perfect: "gesessen", polish: "siedzieć" },
+                { infinitive: "sprechen", preterite: "sprach", perfect: "gesprochen", polish: "mówić" },
+                { infinitive: "springen", preterite: "sprang", perfect: "gesprungen", polish: "skakać" },
+                { infinitive: "stehen", preterite: "stand", perfect: "gestanden", polish: "stać" },
+                { infinitive: "steigen", preterite: "stieg", perfect: "gestiegen", polish: "wspinać się" },
+                { infinitive: "sterben", preterite: "starb", perfect: "gestorben", polish: "umierać" },
+                { infinitive: "streiten", preterite: "stritt", perfect: "gestritten", polish: "kłócić się" }
+            ],
+            5: [
+                { infinitive: "tragen", preterite: "trug", perfect: "getragen", polish: "nosić" },
+                { infinitive: "treffen", preterite: "traf", perfect: "getroffen", polish: "spotykać" },
+                { infinitive: "trinken", preterite: "trank", perfect: "getrunken", polish: "pić" },
+                { infinitive: "tun", preterite: "tat", perfect: "getan", polish: "robić" },
+                { infinitive: "vergessen", preterite: "vergaß", perfect: "vergessen", polish: "zapominać" },
+                { infinitive: "verlieren", preterite: "verlor", perfect: "verloren", polish: "gubić" },
+                { infinitive: "waschen", preterite: "wusch", perfect: "gewaschen", polish: "myć, prać" },
+                { infinitive: "werden", preterite: "wurde", perfect: "geworden", polish: "stawać się" },
+                { infinitive: "wissen", preterite: "wusste", perfect: "gewusst", polish: "wiedzieć" },
+                { infinitive: "ziehen", preterite: "zog", perfect: "gezogen", polish: "ciągnąć" },
+                { infinitive: "verschwinden", preterite: "verschwand", perfect: "verschwunden", polish: "znikać" },
+                { infinitive: "einladen", preterite: "lud ein", perfect: "eingeladen", polish: "zapraszać" }
+            ]
+        };
+
+        // Elementy DOM
+        const learningArea = document.querySelector('.learning-area');
+        const startInfo = document.querySelector('.start-info');
+        const polishWord = document.querySelector('.polish-word');
+        const infinitiveInput = document.getElementById('infinitive');
+        const preteriteInput = document.getElementById('preterite');
+        const perfectInput = document.getElementById('perfect');
+        const checkBtn = document.getElementById('check-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const resultDisplay = document.querySelector('.result');
+        const feedbackDisplay = document.querySelector('.feedback');
+        const pointsDisplay = document.getElementById('points');
+        const correctDisplay = document.getElementById('correct');
+        const incorrectDisplay = document.getElementById('incorrect');
+        const remainingDisplay = document.getElementById('remaining');
+        const progressBar = document.querySelector('.progress-bar');
+        const vocabularyToggle = document.querySelector('.vocabulary-toggle');
+        const vocabularyList = document.querySelector('.vocabulary-list');
+        const themeToggle = document.getElementById('theme-toggle');
+        const tutorialOverlay = document.getElementById('tutorial-overlay');
+        const startTutorialBtn = document.getElementById('start-tutorial');
+        const tutorialPrevBtn = document.getElementById('tutorial-prev');
+        const tutorialNextBtn = document.getElementById('tutorial-next');
+        const tutorialSkipBtn = document.getElementById('tutorial-skip');        const tutorialSteps = [
+            document.getElementById('tutorial-step-1'),
+            document.getElementById('tutorial-step-2'),
+            document.getElementById('tutorial-step-3'),
+            document.getElementById('tutorial-step-4'),
+            document.getElementById('tutorial-step-5')
+        ];
+        
+        // Zmienne stanu aplikacji
+        let currentVerbs = [];          // Aktualna pula słów do nauki
+        let currentVerbIndex = 0;       // Indeks aktualnego słowa
+        let currentVerb = null;         // Aktualnie wyświetlane słowo
+        let points = 0;                 // Punkty zdobyte przez użytkownika
+        let correctAnswers = 0;         // Liczba poprawnych odpowiedzi
+        let incorrectAnswers = 0;       // Liczba niepoprawnych odpowiedzi
+        let userProgress = {};          // Postęp użytkownika
+        let currentTutorialStep = 0;    // Aktualny krok samouczka
+        let userTheme = localStorage.getItem('germanVerbsTheme') || 'auto';  // Motyw aplikacji        let incorrectVerbs = [];        // Słowa z błędnymi odpowiedziami
+        let currentBlockId = null;      // ID aktualnego bloku
+        let masteredBlocks = [];        // Lista opanowanych bloków
+        let allBlockWords = [];         // Wszystkie słowa z aktualnego bloku - pełna kopia
+        let correctAnswersTracker = {}; // Śledzenie poprawnych odpowiedzi dla każdego słowa
+        
+        // Inicjalizacja lokalnego magazynu
+        if (!localStorage.getItem('germanVerbsProgress')) {
+            localStorage.setItem('germanVerbsProgress', JSON.stringify({}));
+        } else {
+            userProgress = JSON.parse(localStorage.getItem('germanVerbsProgress'));
+        }
+          // Wczytanie listy opanowanych bloków
+        if (localStorage.getItem('germanVerbsMasteredBlocks')) {
+            masteredBlocks = JSON.parse(localStorage.getItem('germanVerbsMasteredBlocks'));
+        }
+        
+        // Wczytanie stanu liczników poprawnych odpowiedzi
+        if (localStorage.getItem('germanVerbsCorrectAnswersTracker')) {
+            correctAnswersTracker = JSON.parse(localStorage.getItem('germanVerbsCorrectAnswersTracker'));
+            console.log("Wczytano stan liczników poprawnych odpowiedzi z localStorage");
+        }
+
+        // Ustawienie motywu
+        function setTheme(theme) {
+            if (theme === 'dark') {                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (theme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+            
+            localStorage.setItem('germanVerbsTheme', theme);
+            userTheme = theme;
+        }
+
+        // Przełączenie motywu
+        themeToggle.addEventListener('click', () => {
+            if (userTheme === 'auto' || userTheme === 'light') {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+        });
+
+        // Inicjalizacja motywu
+        setTheme(userTheme);
+
+        // Aktualizacja wyglądu przycisków bloków po załadowaniu strony
+        updateBlockButtons();
+
+        // Sprawdzenie, czy samouczek został już ukończony
+        const tutorialCompleted = localStorage.getItem('germanVerbsTutorialComplete') === 'true';        // Obsługa samouczka
+        startTutorialBtn.addEventListener('click', () => {
+            console.log('Przycisk "Pokaż samouczek" kliknięty');
+            console.log('Element tutorialOverlay przed otwarciem:', tutorialOverlay);
+            tutorialOverlay.classList.remove('hidden');
+            tutorialOverlay.style.display = 'flex';  // Explicite ustawiamy display na flex
+            showTutorialStep(0);
+        });
+
+        tutorialPrevBtn.addEventListener('click', () => {
+            console.log('Przycisk "Wstecz" kliknięty');
+            showTutorialStep(currentTutorialStep - 1);
+        });
+        
+        tutorialNextBtn.addEventListener('click', () => {
+            console.log('Przycisk "Dalej/Zakończ" kliknięty');
+            if (currentTutorialStep < tutorialSteps.length - 1) {
+                showTutorialStep(currentTutorialStep + 1);
+            } else {
+                console.log('Osiągnięto ostatni krok, zamykanie samouczka');
+                closeTutorial();
+            }
+        });
+
+        tutorialSkipBtn.addEventListener('click', () => {
+            console.log('Przycisk "Pomiń samouczek" kliknięty');
+            closeTutorial();
+        });        function closeTutorial() {
+            console.log('Zamykanie samouczka...');
+            console.log('Element tutorialOverlay:', tutorialOverlay);
+            console.log('Klasy przed zmianą:', tutorialOverlay.className);
+            
+            // Bezpośrednie ustawienie stylu display
+            tutorialOverlay.style.display = 'none';
+            
+            // Dodatkowo dodajemy klasę hidden
+            tutorialOverlay.classList.add('hidden');
+            
+            console.log('Klasy po zmianie:', tutorialOverlay.className);
+            
+            // Zapisanie informacji, że samouczek został ukończony
+            localStorage.setItem('germanVerbsTutorialComplete', 'true');
+            console.log('Samouczek zamknięty i oznaczony jako ukończony');
+        }
+
+        function showTutorialStep(stepIndex) {
+            console.log('Pokazywanie kroku samouczka:', stepIndex);
+            // Ukrywanie wszystkich kroków
+            tutorialSteps.forEach(step => step.classList.add('hidden'));
+            
+            // Pokazanie wybranego kroku
+            tutorialSteps[stepIndex].classList.remove('hidden');
+            
+            // Aktualizacja stanu przycisków
+            tutorialPrevBtn.disabled = stepIndex === 0;
+            
+            if (stepIndex === tutorialSteps.length - 1) {
+                tutorialNextBtn.textContent = 'Zakończ';
+            } else {
+                tutorialNextBtn.textContent = 'Dalej';
+            }
+            
+            currentTutorialStep = stepIndex;
+            console.log('Aktualny krok samouczka ustawiony na:', currentTutorialStep);
+        }
+
+        // Dodanie obsługi kliknięcia przycisku bloku
+        document.querySelectorAll('.block-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const blockId = btn.getAttribute('data-block');
+                console.log(`Kliknięto przycisk bloku ${blockId}`);
+                startLearningBlock(blockId);
+            });
+        });        // Funkcja rozpoczynająca naukę danego bloku
+        function startLearningBlock(blockId) {
+            console.log(`Rozpoczynam naukę bloku ${blockId}`);
+            
+            try {
+                learningArea.classList.remove('hidden');
+                startInfo.classList.add('hidden');
+                
+                // Zapisanie identyfikatora aktualnego bloku
+                currentBlockId = blockId;
+                
+                // OCZYSZCZANIE: Usuń słowa które już zostały opanowane (2/2) z licznika
+                console.log("Oczyszczam opanowane słowa z licznika...");
+                const masteredWords = [];
+                for (const [word, count] of Object.entries(correctAnswersTracker)) {
+                    if (count >= 2) {
+                        masteredWords.push(word);
+                    }
+                }
+                
+                // Usuń opanowane słowa z licznika
+                masteredWords.forEach(word => {
+                    delete correctAnswersTracker[word];
+                    console.log(`Usunięto opanowane słowo z licznika: ${word}`);
+                });
+                
+                // Zapisz oczyszczony stan
+                localStorage.setItem('germanVerbsCorrectAnswersTracker', JSON.stringify(correctAnswersTracker));
+                
+                // Czyszczenie listy niepoprawnych słów
+                incorrectVerbs = [];
+            
+            // Przygotowanie listy czasowników do nauki
+            let selectedVerbs = [];
+            
+            if (blockId === 'all') {
+                // W trybie "wszystkie" dodajemy tylko słówka z bloków, które nie są opanowane
+                // lub wszystkie, jeśli wszystkie bloki są już opanowane
+                let anyBlockAdded = false;
+                
+                for (let i = 1; i <= 5; i++) {
+                    if (!masteredBlocks.includes(i.toString())) {
+                        selectedVerbs = selectedVerbs.concat(JSON.parse(JSON.stringify(verbBlocks[i])));
+                        anyBlockAdded = true;
+                    }
+                }
+                
+                // Jeśli wszystkie bloki są opanowane, dajemy wszystkie słówka
+                if (!anyBlockAdded) {
+                    for (let i = 1; i <= 5; i++) {
+                        selectedVerbs = selectedVerbs.concat(JSON.parse(JSON.stringify(verbBlocks[i])));
+                    }
+                }
+            } else {
+                // Jeśli blok został już opanowany, informujemy użytkownika
+                if (masteredBlocks.includes(blockId)) {
+                    const confirmed = confirm(`Ten blok (${blockId}) został już przez Ciebie opanowany! Czy chcesz go powtórzyć dla utrwalenia?`);
+                    if (!confirmed) {
+                        return; // Przerywamy funkcję, jeśli użytkownik nie chce powtarzać
+                    }
+                }
+                // Głębokie kopiowanie tablicy czasowników z wybranego bloku
+                selectedVerbs = JSON.parse(JSON.stringify(verbBlocks[blockId]));
+            }
+            
+            // Zapisujemy pełną kopię wszystkich słów z bloku do późniejszej weryfikacji
+            allBlockWords = JSON.parse(JSON.stringify(selectedVerbs));
+            console.log(`Blok ${blockId} zawiera ${allBlockWords.length} słów. Zapisano pełną kopię dla weryfikacji.`);
+            
+            // Tasowanie czasowników
+            shuffleArray(selectedVerbs);
+            currentVerbs = selectedVerbs;
+            
+            // Rozpoczęcie nauki
+            currentVerbIndex = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            points = 0;
+            updateStats();
+            loadNextVerb();            
+            // Aktualizacja listy słownictwa
+            updateVocabularyList();
+            
+            // Aktualizacja wyglądu przycisków bloków
+            updateBlockButtons();
+            
+            console.log(`Blok ${blockId} został załadowany pomyślnie`);
+            } catch (error) {
+                console.error(`Błąd podczas ładowania bloku ${blockId}:`, error);
+                alert(`Wystąpił błąd podczas ładowania bloku ${blockId}. Spróbuj odświeżyć stronę.`);
+            }
+        }
+          // Funkcja ładująca następny czasownik
+        function loadNextVerb() {
+            console.log(`loadNextVerb wywołane, indeks: ${currentVerbIndex}, liczba słów: ${currentVerbs.length}`);
+            
+            // Sprawdzamy, czy indeks nie wyszedł poza zakres
+            if (currentVerbIndex >= currentVerbs.length) {
+                console.log("Indeks poza zakresem, przejście do powtórki lub zakończenia");
+                
+                // Sprawdzenie, czy mamy jeszcze słówka do powtórzenia
+                if (incorrectVerbs.length > 0) {
+                    console.log("Przed powtórką - liczba niepoprawnych słów:", incorrectVerbs.length);
+                    
+                    // Sprawdź, czy mamy wszystkie słowa z bloku
+                    // Jeśli w procesie nauki, wszyscy czasowniki powinni być w puli powtórek
+                    const totalExpectedWords = allBlockWords.length;
+                    const missingWordsCount = totalExpectedWords - incorrectVerbs.length;
+                    
+                    if (missingWordsCount > 0) {
+                        console.warn(`UWAGA: Brakuje ${missingWordsCount} słów w liście niepoprawnych! Powinno być ${totalExpectedWords}, jest ${incorrectVerbs.length}`);
+                        
+                        // Znajdź brakujące słowa
+                        const incorrectVerbsInfinitives = incorrectVerbs.map(v => v.infinitive);
+                        const missingWords = allBlockWords.filter(w => !incorrectVerbsInfinitives.includes(w.infinitive));
+                        
+                        if (missingWords.length > 0) {
+                            console.warn("Brakujące słowa:", missingWords.map(w => `${w.polish} (${w.infinitive})`).join(", "));
+                            
+                            // Dodaj brakujące słowa do listy niepoprawnych
+                            console.log("Dodaję brakujące słowa do listy niepoprawnych");
+                            incorrectVerbs = incorrectVerbs.concat(JSON.parse(JSON.stringify(missingWords)));
+                        }
+                    }
+                      // Walidacja listy niepoprawnych słów przed przygotowaniem powtórki
+                    validateIncorrectVerbs();
+                    
+                    // NIE resetujemy trackera poprawnych odpowiedzi przed powtórką!
+                    // Zamiast tego, dodajmy logowanie, by zobaczyć stan liczników
+                    console.log("Stan liczników correctAnswersTracker przed powtórką:");
+                    for (const [word, count] of Object.entries(correctAnswersTracker)) {
+                        console.log(`- ${word}: ${count}/2`);
+                    }
+                    
+                    // Zapisujemy liczbę słów przed kopiowaniem (dla debugowania)
+                    const incorrectVerbsCount = incorrectVerbs.length;
+                    
+                    // Głębokie kopiowanie listy niepoprawnych słów
+                    console.log("Lista niepoprawnych słów przed kopiowaniem:");
+                    incorrectVerbs.forEach((verb, idx) => {
+                        console.log(`${idx + 1}. ${verb.polish} (${verb.infinitive})`);
+                    });
+                    
+                    // Utwórz poprawną głęboką kopię tablicy niepoprawnych czasowników
+                    const incorrectVerbsDeepCopy = JSON.parse(JSON.stringify(incorrectVerbs));
+                    
+                    // Przypisujemy głęboką kopię do currentVerbs
+                    currentVerbs = incorrectVerbsDeepCopy;
+                    // WAŻNA ZMIANA: NIE CZYŚCIMY LISTY NIEPOPRAWNYCH SŁÓW
+                    // Niepoprawne słowa zostaną usunięte z listy tylko wtedy, gdy będą 2 razy odpowiedziane poprawnie
+                    // incorrectVerbs = []; // To usunięto - NIE czyścimy tablicy niepoprawnych
+                    
+                    shuffleArray(currentVerbs); // Mieszamy słówka
+                    currentVerbIndex = 0;
+                    
+                    console.log("Lista słów przygotowanych do powtórki:", currentVerbs.map(v => v.polish).join(", "));
+                    console.log(`Liczba słów do powtórki: ${currentVerbs.length} (powinno być: ${incorrectVerbsCount})`);
+                    
+                    // Sprawdź, czy liczba słów się zgadza
+                    if (currentVerbs.length !== incorrectVerbsCount) {
+                        console.error("BŁĄD: Liczba słów do powtórki nie zgadza się z liczbą niepoprawnych słów!");
+                        console.error("Brakujące słowa:", 
+                            incorrectVerbsDeepCopy.filter(v1 => !currentVerbs.some(v2 => v2.infinitive === v1.infinitive))
+                                .map(v => v.polish).join(", ")
+                        );
+                    }
+                    
+                    console.log("Po przygotowaniu do powtórki - liczba słów:", currentVerbs.length);                    // Informujemy użytkownika o powtórce
+                    polishWord.textContent = 'Powtórka!';
+                    resultDisplay.innerHTML = `<div class="hint">Powtórzymy ${currentVerbs.length} słówek, które wymagają więcej ćwiczeń.</div>
+                    <div>Każde słówko musi zostać poprawnie odpowiedziane <strong>2 razy z rzędu</strong> (wszystkie 3 formy), aby zostało uznane za opanowane.</div>
+                    <div>Każda błędna odpowiedź resetuje licznik do zera. System adaptacyjny zapamiętuje Twoje błędy i skupia się na słowach, które sprawiają Ci trudność.</div>`;
+                    resultDisplay.className = 'result';
+                    checkBtn.classList.add('hidden');
+                    
+                    // Dodajemy przycisk do kontynuacji
+                    nextBtn.textContent = 'Kontynuuj powtórkę';
+                    nextBtn.classList.remove('hidden');
+                    
+                    // Po kliknięciu przycisku rozpoczynamy powtórkę
+                    nextBtn.onclick = function() {
+                        nextBtn.textContent = 'Następne słowo'; // Przywracamy oryginalny tekst
+                        nextBtn.onclick = null; // Usuwamy ten handler
+                        loadNextVerb(); // Ładujemy pierwszy czasownik z powtórki
+                    };
+                    
+                    // Aktualizacja statystyk
+                    updateProgressBar();
+                    
+                    // Wyświetl szczegółowe informacje o powtórce
+                    console.log("====== ROZPOCZYNAM POWTÓRKĘ ======");
+                    console.log("Liczba słów do powtórki:", currentVerbs.length);
+                    console.log("Słowa do powtórki:", currentVerbs.map(v => v.polish).join(", "));
+                    console.log("Lista niepoprawnych:", incorrectVerbs.map(v => v.polish).join(", "));
+                    console.log("Liczba niepoprawnych:", incorrectVerbs.length);
+                    console.log("=================================");
+                } else {
+                    // Koniec nauki - wszystkie słówka opanowane
+                    handleLearningComplete();
+                }            } else {
+                // Normalny przypadek - wyświetlanie następnego słowa
+                // SPRAWDŹ czy aktualne słowo nie zostało już opanowane (>=2 poprawne odpowiedzi)
+                let attempts = 0;
+                while (currentVerbIndex < currentVerbs.length && attempts < currentVerbs.length) {
+                    const potentialVerb = currentVerbs[currentVerbIndex];
+                    const verbCount = correctAnswersTracker[potentialVerb.infinitive] || 0;
+                    
+                    if (verbCount >= 2) {
+                        console.log(`Pomijam opanowane słowo: "${potentialVerb.polish}" (${verbCount}/2)`);
+                        // Usuń opanowane słowo z currentVerbs
+                        currentVerbs.splice(currentVerbIndex, 1);
+                        // Nie zwiększamy indeksu, bo następny element przesunął się na tę pozycję
+                        attempts++;
+                        continue;
+                    } else {
+                        // Znaleźliśmy słowo które nie jest jeszcze opanowane
+                        break;
+                    }
+                }
+                
+                // Sprawdź ponownie czy mamy jeszcze słowa po filtrowaniu
+                if (currentVerbIndex >= currentVerbs.length) {
+                    console.log("Po usunięciu opanowanych słów, nie ma więcej słów do nauki");
+                    loadNextVerb(); // Rekurencyjne wywołanie, które przejdzie do logiki zakończenia
+                    return;
+                }
+                
+                currentVerb = currentVerbs[currentVerbIndex];
+                console.log(`Wyświetlam słowo: "${currentVerb.polish}" (licznik: ${correctAnswersTracker[currentVerb.infinitive] || 0}/2)`);
+                polishWord.textContent = currentVerb.polish;
+                
+                // Czyszczenie pól wejściowych
+                infinitiveInput.value = '';
+                preteriteInput.value = '';
+                perfectInput.value = '';
+                
+                // Resetowanie kolorów pól
+                infinitiveInput.style.backgroundColor = '';
+                infinitiveInput.style.color = '';
+                infinitiveInput.style.border = '';
+                preteriteInput.style.backgroundColor = '';
+                preteriteInput.style.color = '';
+                preteriteInput.style.border = '';
+                perfectInput.style.backgroundColor = '';
+                perfectInput.style.color = '';
+                perfectInput.style.border = '';
+                
+                // Resetowanie stanu UI
+                resultDisplay.textContent = '';
+                resultDisplay.className = 'result';
+                feedbackDisplay.classList.add('hidden');
+                feedbackDisplay.textContent = '';
+                checkBtn.classList.remove('hidden');
+                nextBtn.classList.add('hidden');
+                
+                // Aktualizacja statystyk
+                remainingDisplay.textContent = currentVerbs.length - currentVerbIndex;
+                updateProgressBar();
+                  // Ustawienie fokusu na pierwsze pole
+                infinitiveInput.focus();
+            }
+        }
+          // Funkcja obsługująca zakończenie nauki
+        function handleLearningComplete() {
+            // Sprawdź, czy lista niepoprawnych słów jest pusta
+            // Jeśli nie jest pusta, to nie powinniśmy kończyć nauki
+            if (incorrectVerbs.length > 0) {
+                console.warn("UWAGA: handleLearningComplete został wywołany, ale lista niepoprawnych słów nie jest pusta!");
+                console.warn("Liczba niepoprawnych słów:", incorrectVerbs.length);
+                console.warn("Niepoprawne słowa:", incorrectVerbs.map(v => v.polish).join(", "));
+                
+                // Zamiast kończyć naukę, rozpoczynamy powtórkę
+                console.log("Przekierowuję do powtórki zamiast kończyć naukę...");
+                
+                // Ustawiamy bieżący indeks poza zakresem, żeby loadNextVerb przeszedł do powtórki
+                currentVerbIndex = currentVerbs.length;
+                loadNextVerb();
+                return;
+            }
+            
+            // Jeśli to był konkretny blok (nie "all"), oznaczamy go jako opanowany
+            if (currentBlockId !== 'all' && !masteredBlocks.includes(currentBlockId)) {
+                masteredBlocks.push(currentBlockId);
+                localStorage.setItem('germanVerbsMasteredBlocks', JSON.stringify(masteredBlocks));
+                
+                // Określenie następnego bloku do nauki
+                const nextBlockId = getNextBlockId(currentBlockId);
+                
+                polishWord.textContent = 'Gratulacje! 🎉';
+                resultDisplay.innerHTML = `<p class="correct">Świetnie! Opanowałeś/aś wszystkie czasowniki z bloku ${currentBlockId}!</p>
+                <p>Twój wynik: ${points} punktów.</p>
+                <p>Blok został oznaczony jako opanowany i zapisany w Twoim profilu.</p>`;
+                
+                if (nextBlockId) {
+                    resultDisplay.innerHTML += `<p>Czy chcesz przejść do następnego bloku?</p>
+                        <button id="next-block-btn" class="tutorial-nav-btn">Tak, przejdź do bloku ${nextBlockId}</button>
+                        <button id="stay-btn" class="tutorial-nav-btn tutorial-skip">Nie, zostań tutaj</button>`;
+                    
+                    // Dodanie obsługi przycisków
+                    document.getElementById('next-block-btn').addEventListener('click', () => {
+                        startLearningBlock(nextBlockId);
+                    });
+                    
+                    document.getElementById('stay-btn').addEventListener('click', () => {
+                        // Nic nie robimy, użytkownik zostaje na obecnym ekranie
+                    });
+                } else {
+                    resultDisplay.innerHTML += `<p class="correct">Brawo! Opanowałeś/aś wszystkie bloki czasowników!</p>
+                    <p>Możesz teraz powtórzyć dowolny blok dla utrwalenia wiedzy lub wybrać opcję "Wszystkie" aby przećwiczyć wszystkie czasowniki razem.</p>`;
+                }
+            } else if (currentBlockId === 'all') {
+                // Komunikat dla trybu "wszystkie"
+                polishWord.textContent = 'Ukończono! 🎉';
+                resultDisplay.innerHTML = `<p class="correct">Gratulacje! Poprawnie odpowiedziałeś/aś na wszystkie pytania w trybie "Wszystkie".</p>
+                <p>Twój wynik: ${points} punktów.</p>
+                <p>Możesz teraz wybrać inny blok do nauki lub powtórzyć ten sam tryb.</p>`;
+            } else {
+                // Komunikat dla już opanowanego bloku
+                polishWord.textContent = 'Powtórka ukończona! 🎉';
+                resultDisplay.innerHTML = `<p class="correct">Świetnie! Powtórzyłeś/aś blok ${currentBlockId}, który wcześniej już opanowałeś/aś.</p>
+                <p>Twój wynik: ${points} punktów.</p>
+                <p>Regularnie powtarzaj materiał, aby go nie zapomnieć!</p>`;
+                
+                // Określenie następnego bloku do nauki
+                const nextBlockId = getNextBlockId(currentBlockId);
+                
+                if (nextBlockId) {
+                    resultDisplay.innerHTML += `<p>Czy chcesz przejść do bloku ${nextBlockId}?</p>
+                        <button id="next-block-btn" class="tutorial-nav-btn">Tak, przejdź do bloku ${nextBlockId}</button>
+                        <button id="stay-btn" class="tutorial-nav-btn tutorial-skip">Nie, zostań tutaj</button>`;
+                    
+                    // Dodanie obsługi przycisków
+                    document.getElementById('next-block-btn').addEventListener('click', () => {
+                        startLearningBlock(nextBlockId);
+                    });
+                    
+                    document.getElementById('stay-btn').addEventListener('click', () => {
+                        // Nic nie robimy, użytkownik zostaje na obecnym ekranie
+                    });
+                }
+            }
+            
+            resultDisplay.className = 'result';
+            checkBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            
+            // Aktualizacja statystyk
+            remainingDisplay.textContent = '0';
+            updateProgressBar(100); // Ustawienie paska postępu na 100%
+        }
+        
+        // Funkcja zwracająca ID następnego bloku do nauki
+        function getNextBlockId(currentBlockId) {
+            const blockNumber = parseInt(currentBlockId);
+            
+            if (isNaN(blockNumber) || blockNumber >= 5) {
+                return null; // Nie ma następnego bloku
+            }
+            
+            const nextBlockId = (blockNumber + 1).toString();
+            
+            // Sprawdzamy, czy następny blok nie został już opanowany
+            if (masteredBlocks.includes(nextBlockId)) {
+                return getNextBlockId(nextBlockId); // Rekurencyjnie szukamy kolejnego nieopanowanego bloku
+            }
+            
+            return nextBlockId;
+        }        // Funkcja sprawdzająca odpowiedzi
+        function checkAnswers() {
+            console.log("=== FUNKCJA checkAnswers ZOSTAŁA WYWOŁANA ===");
+            console.log("Funkcja checkAnswers wywołana");
+            
+            const userInfinitive = infinitiveInput.value.trim().toLowerCase();
+            const userPreterite = preteriteInput.value.trim().toLowerCase();
+            const userPerfect = perfectInput.value.trim().toLowerCase();
+            
+            console.log(`Sprawdzam odpowiedzi: "${userInfinitive}", "${userPreterite}", "${userPerfect}"`);
+            console.log(`Poprawne odpowiedzi: "${currentVerb.infinitive}", "${currentVerb.preterite}", "${currentVerb.perfect}"`);            console.log("=== DEBUGOWANIE checkAnswers ===");
+            console.log("SPRAWDZAM: Czy pola są puste...");
+            const areFieldsEmpty = highlightEmptyFields();
+            console.log("Wynik sprawdzenia pustych pól:", areFieldsEmpty);
+            
+            if (areFieldsEmpty) {
+                console.log("POLA SĄ PUSTE - pokazuję poprawne odpowiedzi");
+                resultDisplay.textContent = 'Pokazuję poprawne odpowiedzi. Postaraj się je zapamiętać!';
+                resultDisplay.className = 'result';
+                
+                // Wypełnij pola poprawnymi odpowiedziami
+                infinitiveInput.value = currentVerb.infinitive;
+                infinitiveInput.style.backgroundColor = 'var(--correct-color)';
+                infinitiveInput.style.color = 'white';
+                
+                preteriteInput.value = currentVerb.preterite;
+                preteriteInput.style.backgroundColor = 'var(--correct-color)';
+                preteriteInput.style.color = 'white';
+                
+                perfectInput.value = currentVerb.perfect;
+                perfectInput.style.backgroundColor = 'var(--correct-color)';
+                perfectInput.style.color = 'white';
+                
+                // Pokaż informację w obszarze feedbacku
+                let feedback = `
+                    <div>Bezokolicznik: <span class="correct">${currentVerb.infinitive}</span></div>
+                    <div>Präteritum: <span class="correct">${currentVerb.preterite}</span></div>
+                    <div>Perfekt: <span class="correct">${currentVerb.perfect}</span></div>
+                `;
+                
+                // Dodanie przykładowego zdania
+                let exampleSentence = '';
+                switch (currentVerb.infinitive) {
+                    case 'gehen':
+                        exampleSentence = 'Przykład: Ich <strong>gehe</strong> zur Schule. (Idę do szkoły)';
+                        break;
+                    case 'essen':
+                        exampleSentence = 'Przykład: Ich <strong>esse</strong> einen Apfel. (Jem jabłko)';
+                        break;
+                    case 'trinken':
+                        exampleSentence = 'Przykład: Er <strong>trinkt</strong> Wasser. (On pije wodę)';
+                        break;
+                    case 'lesen':
+                        exampleSentence = 'Przykład: Sie <strong>liest</strong> ein Buch. (Ona czyta książkę)';
+                        break;
+                    case 'schreiben':
+                        exampleSentence = 'Przykład: Wir <strong>schreiben</strong> einen Brief. (Piszemy list)';
+                        break;
+                    default:
+                        // Dla innych czasowników - generowanie prostego przykładu
+                        exampleSentence = `Przykład: Ich <strong>${currentVerb.infinitive}</strong>. (Ja ${currentVerb.polish})`;
+                }
+                
+                feedback += `<div class="example-sentence">${exampleSentence}</div>`;
+                
+                feedbackDisplay.innerHTML = `<div class="hint">Poprawne odpowiedzi:</div>${feedback}`;
+                feedbackDisplay.classList.remove('hidden');
+                
+                // Ukryj przycisk sprawdź i pokaż przycisk następny
+                checkBtn.classList.add('hidden');
+                nextBtn.classList.remove('hidden');
+                
+                // Dodaj słówko do listy niepoprawnych
+                addToIncorrectVerbs();
+                
+                // Resetuj licznik poprawnych odpowiedzi dla tego słowa - puste pola to też błąd                
+                if (currentVerb && currentVerb.infinitive) {
+                    const oldCount = correctAnswersTracker[currentVerb.infinitive] || 0;
+                    correctAnswersTracker[currentVerb.infinitive] = 0;
+                    console.log(`DEBUG: RESETUJĘ LICZNIK (puste pola) - poprzedni stan: ${oldCount}, nowy stan: 0`);
+                    console.log(`Resetuję licznik poprawnych odpowiedzi dla "${currentVerb.polish}" - puste pola`);
+                    
+                    // Zapisz stan liczników do localStorage po resecie
+                    localStorage.setItem('germanVerbsCorrectAnswersTracker', JSON.stringify(correctAnswersTracker));
+                }
+                
+                // Zaktualizuj statystyki
+                incorrectAnswers++;
+                updateStats();
+                  return; // Przerywamy funkcję - nic więcej nie sprawdzamy
+            }
+            
+            console.log("KONTYNUUJĘ - pola nie są puste");
+            let correctCount = 0;
+            let feedback = '';
+            
+            console.log("SPRAWDZAM odpowiedzi...");
+            // Sprawdzanie bezokolicznika
+            console.log(`Porównuję bezokolicznik: "${userInfinitive}" === "${currentVerb.infinitive}"`);
+            if (userInfinitive === currentVerb.infinitive) {
+                correctCount++;
+                console.log("Bezokolicznik POPRAWNY");
+                infinitiveInput.style.backgroundColor = 'var(--correct-color)';
+                infinitiveInput.style.color = 'white';
+            } else {
+                console.log("Bezokolicznik NIEPOPRAWNY");
+                infinitiveInput.style.backgroundColor = 'var(--incorrect-color)';
+                infinitiveInput.style.color = 'white';
+                feedback += `<div>Bezokolicznik: <span class="correct">${currentVerb.infinitive}</span></div>`;
+            }
+              // Sprawdzanie Präteritum
+            console.log(`Porównuję Präteritum: "${userPreterite}" === "${currentVerb.preterite}"`);
+            if (userPreterite === currentVerb.preterite) {
+                correctCount++;
+                console.log("Präteritum POPRAWNY");
+                preteriteInput.style.backgroundColor = 'var(--correct-color)';
+                preteriteInput.style.color = 'white';
+            } else {
+                console.log("Präteritum NIEPOPRAWNY");
+                preteriteInput.style.backgroundColor = 'var(--incorrect-color)';
+                preteriteInput.style.color = 'white';
+                feedback += `<div>Präteritum: <span class="correct">${currentVerb.preterite}</span></div>`;
+            }
+            
+            // Sprawdzanie Perfekt
+            console.log(`Porównuję Perfekt: "${userPerfect}" === "${currentVerb.perfect}"`);
+            if (userPerfect === currentVerb.perfect) {
+                correctCount++;
+                console.log("Perfekt POPRAWNY");
+                perfectInput.style.backgroundColor = 'var(--correct-color)';                perfectInput.style.color = 'white';
+            } else {
+                console.log("Perfekt NIEPOPRAWNY");
+                perfectInput.style.backgroundColor = 'var(--incorrect-color)';
+                perfectInput.style.color = 'white';
+                feedback += `<div>Perfekt: <span class="correct">${currentVerb.perfect}</span></div>`;
+            }
+            
+            console.log(`WYNIK SPRAWDZENIA: ${correctCount}/3 poprawne odpowiedzi`);            console.log(`WYNIK SPRAWDZENIA: ${correctCount}/3 poprawne odpowiedzi`);
+              
+            // Punktacja
+            const newPoints = correctCount * correctCount; // 0, 1, 4 lub 9 punktów
+            console.log(`Dodaję ${newPoints} punktów`);
+            points += newPoints;            // Wyświetlanie wyniku
+            console.log("SPRAWDZAM czy wszystkie odpowiedzi są poprawne...");
+            if (correctCount === 3) {
+                console.log("WSZYSTKIE 3 ODPOWIEDZI SĄ POPRAWNE!");
+                resultDisplay.textContent = 'Wszystko poprawnie! +9 punktów';
+                resultDisplay.className = 'result correct';
+                correctAnswers++;
+                
+                // Sprawdź aktualny stan licznika PRZED sprawdzeniem i ewentualnym usunięciem
+                const currentCount = correctAnswersTracker[currentVerb.infinitive] || 0;
+                
+                // Usuwamy poprawnie odpowiedziane słówko z puli TYLKO jeśli wszystkie odpowiedzi są poprawne i to dokładnie drugi raz
+                const wasRemoved = checkAndRemoveWord(correctCount);
+                  
+                // Wypisz stan aplikacji do konsoli (debugowanie)                
+                if (wasRemoved) {
+                    console.log("Wszystkie odpowiedzi poprawne 2/2 razy - usuwam słówko z puli!");
+                    resultDisplay.textContent = 'Wszystko poprawnie! +9 punktów. Opanowałeś to słowo! (2/2)';
+                } else {
+                    // Używamy zaktualizowanego licznika z checkAndRemoveWord
+                    const newCount = correctAnswersTracker[currentVerb.infinitive] || 0;
+                    console.log(`Wszystkie odpowiedzi poprawne ${newCount}/2 razy - słówko pozostaje w puli`);
+                    if (newCount === 1) {
+                        resultDisplay.textContent = 'Wszystko poprawnie! +9 punktów. Jeszcze raz poprawnie i opanujesz to słowo! (1/2)';
+                    } else {
+                        resultDisplay.textContent = 'Wszystko poprawnie! +9 punktów';
+                    }
+                }
+                logAppState();
+            } else {
+                // Wszystkie inne przypadki (1-2 poprawne lub wszystkie błędne)
+                if (correctCount > 0) {
+                    resultDisplay.textContent = `Częściowo poprawnie. +${newPoints} punktów`;
+                    resultDisplay.className = 'result';
+                    
+                    if (correctCount >= 2) {
+                        correctAnswers++;
+                    } else {
+                        incorrectAnswers++;
+                    }
+                } else {
+                    resultDisplay.textContent = 'Niestety, wszystkie odpowiedzi są niepoprawne.';
+                    resultDisplay.className = 'result incorrect';
+                    incorrectAnswers++;
+                }
+                  // Dodanie czasownika do listy niepoprawnych, gdy nie wszystkie odpowiedzi są poprawne
+                addToIncorrectVerbs();
+                  // Resetuj licznik poprawnych odpowiedzi dla tego słowa przy błędzie
+                if (currentVerb && currentVerb.infinitive) {                    const oldCount = correctAnswersTracker[currentVerb.infinitive] || 0;
+                    correctAnswersTracker[currentVerb.infinitive] = 0;
+                    console.log(`DEBUG: RESETUJĘ LICZNIK - poprzedni stan: ${oldCount}, nowy stan: 0`);
+                    console.log(`Resetuję licznik poprawnych odpowiedzi dla "${currentVerb.polish}" - niepoprawna odpowiedź`);
+                    
+                    // Zapisz stan liczników do localStorage po resecie
+                    localStorage.setItem('germanVerbsCorrectAnswersTracker', JSON.stringify(correctAnswersTracker));
+                }
+                
+                // Wypisz stan aplikacji do konsoli (debugowanie)
+                console.log(`Odpowiedzi częściowo poprawne (${correctCount}/3) - dodaję słowo do niepoprawnych`);
+                logAppState();
+            }
+            
+            // Dodanie przykładowego zdania jako wskazówka
+            let exampleSentence = '';
+            if (correctCount < 3) {
+                switch (currentVerb.infinitive) {
+                    case 'gehen':
+                        exampleSentence = 'Przykład: Ich <strong>gehe</strong> zur Schule. (Idę do szkoły)';
+                        break;
+                    case 'essen':
+                        exampleSentence = 'Przykład: Ich <strong>esse</strong> einen Apfel. (Jem jabłko)';
+                        break;
+                    case 'trinken':
+                        exampleSentence = 'Przykład: Er <strong>trinkt</strong> Wasser. (On pije wodę)';
+                        break;
+                    case 'lesen':
+                        exampleSentence = 'Przykład: Sie <strong>liest</strong> ein Buch. (Ona czyta książkę)';
+                        break;
+                    case 'schreiben':
+                        exampleSentence = 'Przykład: Wir <strong>schreiben</strong> einen Brief. (Piszemy list)';
+                        break;
+                    default:
+                        // Dla innych czasowników - generowanie prostego przykładu
+                        exampleSentence = `Przykład: Ich <strong>${currentVerb.infinitive}</strong>. (Ja ${currentVerb.polish})`;
+                }
+                
+                if (feedback) {
+                    feedback += `<div class="example-sentence">${exampleSentence}</div>`;
+                }
+            }
+              // Aktualizacja interfejsu
+            if (feedback) {
+                feedbackDisplay.innerHTML = `<div class="hint">Poprawne odpowiedzi:</div>${feedback}`;
+                feedbackDisplay.classList.remove('hidden');
+            } else {
+                // Ukryj feedback jeśli nie ma błędów
+                feedbackDisplay.classList.add('hidden');
+            }
+            
+            // ZAWSZE ukrywamy przycisk sprawdź i pokazujemy przycisk następny
+            checkBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+            
+            // Aktualizacja statystyk
+            updateStats();
+              // Zaktualizuj liczbę pozostałych słówek
+            remainingDisplay.textContent = currentVerbs.length - currentVerbIndex - 1;
+            
+            // Zapisanie postępu
+            saveProgress(currentVerb.infinitive, correctCount);
+        }
+          // Pomocnicza funkcja do dodawania czasownika do listy niepoprawnych
+        function addToIncorrectVerbs() {
+            if (!currentVerb) {
+                console.error("Próba dodania null do niepoprawnych czasowników!");
+                return;
+            }
+            
+            // SPRAWDŹ NAJPIERW czy to słowo nie zostało już opanowane (2/2)
+            const verbId = currentVerb.infinitive;
+            const currentCount = correctAnswersTracker[verbId] || 0;
+            
+            if (currentCount >= 2) {
+                console.log(`UWAGA: Słowo "${currentVerb.polish}" ma już ${currentCount}/2 i nie powinno być dodawane do niepoprawnych!`);
+                return; // Nie dodajemy słów które już zostały opanowane
+            }
+            
+            // Tworzymy kopię obiektu używając JSON.parse + JSON.stringify dla głębokiego kopiowania
+            const verbCopy = JSON.parse(JSON.stringify(currentVerb));
+            
+            // Dodajemy dodatkowe debugowanie
+            console.log(`SPRAWDZANIE: addToIncorrectVerbs dla słowa "${verbCopy.polish}" (${verbCopy.infinitive})`);
+            console.log(`Aktualny indeks: ${currentVerbIndex}, długość puli: ${currentVerbs.length}`);
+            
+            // Sprawdzamy, czy czasownik nie jest już w liście
+            const isDuplicate = incorrectVerbs.some(verb => verb.infinitive === verbCopy.infinitive);
+            
+            // Resetujemy licznik poprawnych odpowiedzi dla tego słowa TYLKO jeśli nie jest już opanowane
+            if (verbCopy.infinitive && currentCount < 2) {
+                correctAnswersTracker[verbCopy.infinitive] = 0;
+                console.log(`Zresetowano licznik poprawnych odpowiedzi dla "${verbCopy.polish}" (${verbCopy.infinitive})`);
+            }
+            
+            if (!isDuplicate) {
+                // Upewniamy się, że wszystkie wymagane pola są obecne
+                if (verbCopy.infinitive && verbCopy.preterite && verbCopy.perfect && verbCopy.polish) {
+                    incorrectVerbs.push(verbCopy);
+                    console.log(`Dodano "${verbCopy.polish}" (${verbCopy.infinitive}) do niepoprawnych. Aktualna liczba: ${incorrectVerbs.length}`);
+                    console.log(`Pełna lista niepoprawnych: ${incorrectVerbs.map(v => v.polish).join(', ')}`);
+                } else {
+                    console.error("BŁĄD: Próba dodania niepoprawnego obiektu czasownika:", verbCopy);
+                }
+                
+                // Sprawdź, czy lista jest poprawna
+                validateIncorrectVerbs();
+            } else {
+                console.log(`Słowo "${verbCopy.polish}" (${verbCopy.infinitive}) już jest na liście niepoprawnych.`);
+            }
+        }
+        // Funkcja zapisująca postęp nauki
+        function saveProgress(verbInfinitive, correctCount) {
+            if (!userProgress[verbInfinitive]) {
+                userProgress[verbInfinitive] = { attempts: 0, correctForms: 0 };
+            }
+            
+            userProgress[verbInfinitive].attempts++;
+            userProgress[verbInfinitive].correctForms += correctCount;
+            
+            localStorage.setItem('germanVerbsProgress', JSON.stringify(userProgress));
+        }
+
+        // Funkcja aktualizująca statystyki
+        function updateStats() {
+            pointsDisplay.textContent = points;
+            correctDisplay.textContent = correctAnswers;
+            incorrectDisplay.textContent = incorrectAnswers;
+        }
+
+        // Funkcja aktualizująca pasek postępu
+        function updateProgressBar(overrideValue = null) {
+            let progress;
+            if (overrideValue !== null) {
+                progress = overrideValue;
+            } else if (currentVerbs.length === 0) {
+                progress = 100; // Unikamy dzielenia przez zero
+            } else {
+                progress = (currentVerbIndex / currentVerbs.length) * 100;
+            }
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // Funkcja aktualizująca listę słownictwa
+        function updateVocabularyList() {
+            vocabularyList.innerHTML = '';
+            
+            currentVerbs.forEach(verb => {
+                const item = document.createElement('div');
+                item.className = 'vocabulary-item';
+                item.textContent = `${verb.polish} – ${verb.infinitive}, ${verb.preterite}, ${verb.perfect}`;
+                vocabularyList.appendChild(item);
+            });
+        }
+
+        // Funkcja do aktualizacji wyglądu przycisków bloków
+        function updateBlockButtons() {
+            document.querySelectorAll('.block-btn').forEach(btn => {
+                const blockId = btn.getAttribute('data-block');
+                if (blockId !== 'all' && masteredBlocks.includes(blockId)) {
+                    btn.style.opacity = '0.7';
+                    btn.style.position = 'relative';
+                    
+                    // Sprawdzamy, czy już istnieje badge
+                    let badge = btn.querySelector('.mastered-badge');
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.className = 'mastered-badge';
+                        badge.style.position = 'absolute';
+                        badge.style.top = '-8px';
+                        badge.style.right = '-8px';
+                        badge.style.backgroundColor = 'var(--correct-color)';
+                        badge.style.color = 'white';
+                        badge.style.borderRadius = '50%';
+                        badge.style.width = '20px';
+                        badge.style.height = '20px';
+                        badge.style.display = 'flex';
+                        badge.style.alignItems = 'center';
+                        badge.style.justifyContent = 'center';
+                        badge.style.fontSize = '14px';
+                        badge.style.fontWeight = 'bold';
+                        badge.innerHTML = '✓';
+                        btn.appendChild(badge);
+                    }
+                } else {
+                    btn.style.opacity = '1';
+                    const badge = btn.querySelector('.mastered-badge');                    if (badge) {
+                        btn.removeChild(badge);
+                    }
+                }
+            });
+        }        // Obsługa przycisku sprawdzania
+        console.log("Dodaję event listener do przycisku sprawdź:", checkBtn);
+        if (checkBtn) {
+            checkBtn.addEventListener('click', function(event) {
+                console.log("Kliknięto przycisk sprawdź!", event);
+                event.preventDefault(); // Zapobiegamy domyślnej akcji
+                checkAnswers();
+            });
+        } else {
+            console.error("BŁĄD: Nie można znaleźć przycisku sprawdź!");
+        }
+          // Obsługa przycisku następnego słowa
+        nextBtn.addEventListener('click', () => {
+            console.log("Kliknięto przycisk 'Następne słowo'");
+            
+            // Resetowanie kolorów pól
+            infinitiveInput.style.backgroundColor = '';
+            infinitiveInput.style.color = '';
+            preteriteInput.style.backgroundColor = '';
+            preteriteInput.style.color = '';
+            perfectInput.style.backgroundColor = '';
+            perfectInput.style.color = '';
+            
+            // Ukrycie feedbacku
+            feedbackDisplay.classList.add('hidden');
+            
+            // Sprawdzamy, czy aktualny indeks jest w zakresie
+            if (currentVerbIndex < currentVerbs.length - 1) {
+                // Jeśli nie jesteśmy na ostatnim słowie, po prostu zwiększamy indeks
+                currentVerbIndex++;
+            } else {
+                // Jeśli jesteśmy na ostatnim słowie, ustawiamy indeks poza zakresem,
+                // co spowoduje przejście do logiki powtórki lub zakończenia nauki
+                currentVerbIndex = currentVerbs.length;
+            }
+              // Wypisz stan aplikacji do konsoli (debugowanie)
+            console.log(`Przechodzę do następnego słowa, nowy indeks: ${currentVerbIndex}`);
+            logAppState();
+            loadNextVerb();
+        });
+        
+        // Obsługa klawisza Enter
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (!checkBtn.classList.contains('hidden')) {
+                    checkAnswers();
+                } else if (!nextBtn.classList.contains('hidden')) {
+                    // Używamy takiej samej logiki jak w przycisku "Następne słowo"
+                    if (currentVerbIndex < currentVerbs.length - 1) {
+                        currentVerbIndex++;
+                    } else {
+                        currentVerbIndex = currentVerbs.length;
+                    }
+                    loadNextVerb();
+                }
+            }
+        });
+
+        // Obsługa przełącznika listy słownictwa
+        vocabularyToggle.addEventListener('click', () => {
+            vocabularyList.classList.toggle('show');
+            vocabularyToggle.textContent = vocabularyList.classList.contains('show') ? 'Ukryj słownictwo' : 'Pokaż słownictwo';
+        });
+
+        // Funkcja do tasowania tablicy (algorytm Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Funkcja podświetlająca puste pola
+        function highlightEmptyFields() {
+            const infinitiveEmpty = infinitiveInput.value.trim() === '';
+            const preteriteEmpty = preteriteInput.value.trim() === '';
+            const perfectEmpty = perfectInput.value.trim() === '';
+            
+            // Resetowanie stylów
+            infinitiveInput.style.border = '';
+            preteriteInput.style.border = '';
+            perfectInput.style.border = '';
+            
+            // Podświetlanie pustych pól
+            if (infinitiveEmpty) {
+                infinitiveInput.style.border = '2px solid var(--incorrect-color)';
+            }
+            
+            if (preteriteEmpty) {
+                preteriteInput.style.border = '2px solid var(--incorrect-color)';
+            }
+            
+            if (perfectEmpty) {
+                perfectInput.style.border = '2px solid var(--incorrect-color)';
+            }
+            
+            return infinitiveEmpty || preteriteEmpty || perfectEmpty;
+        }
+        // Pomocnicza funkcja sprawdzająca, czy wszystkie odpowiedzi są poprawne i usuwająca słowo z puli
+        // Każde słowo musi być odpowiedziane poprawnie 2 razy zanim zostanie usunięte z puli
+          function checkAndRemoveWord(correctCount) {
+            console.log(`DEBUG: Wywołanie checkAndRemoveWord z correctCount=${correctCount}`);
+            if (correctCount === 3) {
+                // Śledzenie, ile razy słowo zostało odpowiedziane poprawnie
+                const verbId = currentVerb.infinitive;
+                const oldCount = correctAnswersTracker[verbId] || 0;
+                correctAnswersTracker[verbId] = oldCount + 1;
+                  console.log(`DEBUG: Słowo "${currentVerb.polish}" (${verbId}) - poprzedni licznik: ${oldCount}, nowy licznik: ${correctAnswersTracker[verbId]}/2 wymaganych`);
+                console.log(`Słowo "${currentVerb.polish}" odpowiedziane poprawnie ${correctAnswersTracker[verbId]}/2 razy`);
+                
+                // Zapisz stan liczników do localStorage
+                localStorage.setItem('germanVerbsCorrectAnswersTracker', JSON.stringify(correctAnswersTracker));
+                
+                // Wypisz wszystkie śledzenia słów
+                console.log("DEBUG: Stan liczników correctAnswersTracker:");
+                for (const [word, count] of Object.entries(correctAnswersTracker)) {
+                    console.log(`- ${word}: ${count}/2`);
+                }
+                
+                // Usuwamy słowo TYLKO jeśli zostało odpowiedziane poprawnie 2 razy (nie usuwa po pierwszym razie)
+                const totalCorrectAnswers = userProgress[verbId]?.correctForms || 0;
+                console.log(`DEBUG: Całkowita liczba poprawnych odpowiedzi dla "${currentVerb.polish}": ${totalCorrectAnswers}`);                // Usuwamy słowo TYLKO gdy zostało odpowiedziane dokładnie 2 razy poprawnie (3 formy)
+                if (correctAnswersTracker[verbId] >= 2) {
+                    console.log(`DEBUG: USUWAM SŁOWO - warunek spełniony: poprawnych odpowiedzi ${correctAnswersTracker[verbId]}/2`);
+                    console.log(`Usuwam słowo "${currentVerb.polish}" z puli, indeks: ${currentVerbIndex}, długość przed: ${currentVerbs.length}`);
+                    
+                    // Również usuwamy słowo z listy niepoprawnych (jeśli tam jest)
+                    const incorrectIndex = incorrectVerbs.findIndex(v => v.infinitive === verbId);
+                    if (incorrectIndex !== -1) {
+                        console.log(`Usuwam słowo "${currentVerb.polish}" z listy niepoprawnych, indeks: ${incorrectIndex}`);
+                        incorrectVerbs.splice(incorrectIndex, 1);
+                        console.log(`Po usunięciu, liczba niepoprawnych: ${incorrectVerbs.length}`);
+                    }
+                    
+                    // Wydrukuj informację o słowach niepoprawnych, dla łatwiejszego debugowania
+                    console.log("Lista słów niepoprawnych po usunięciu:");
+                    incorrectVerbs.forEach((v, i) => {
+                        console.log(`${i+1}. ${v.polish} (${v.infinitive})`);
+                    });
+                    
+                    // Jeśli wszystkie odpowiedzi są poprawne 2 razy, usuwamy słowo z puli
+                    currentVerbs.splice(currentVerbIndex, 1);
+                    console.log(`Po usunięciu, długość: ${currentVerbs.length}`);
+                    
+                    // UWAGA: Nie zmieniamy currentVerbIndex, ponieważ:
+                    // 1. Jeśli usunęliśmy element, to element na tej samej pozycji jest teraz inny
+                    // 2. Zapobiegamy przeskakiwaniu słów w powtórce
+                    
+                    // Sprawdzamy, czy indeks nie wyszedł poza zakres po usunięciu
+                    if (currentVerbIndex >= currentVerbs.length && currentVerbs.length > 0) {
+                        console.log("Indeks poza zakresem po usunięciu, korygowanie...");
+                        // Jeśli tak, to ustawiamy na ostatni element
+                        currentVerbIndex = currentVerbs.length - 1;
+                    }
+                    
+                    return true;
+                } else {
+                    console.log(`DEBUG: NIE USUWAM SŁOWA - warunek niespełniony: poprawnych odpowiedzi ${correctAnswersTracker[verbId]}/2`);
+                    return false;
+                }
+            }
+            return false;
+        }
+        
+        // Funkcja do wyświetlania informacji o stanie aplikacji (do debugowania)
+        function logAppState() {
+            console.log("===== STAN APLIKACJI =====");
+            console.log("Aktualna liczba słów w puli:", currentVerbs.length);
+            if (currentVerbs.length > 0) {
+                console.log("Słowa w puli:", currentVerbs.map(v => v.polish).join(", "));
+            }
+            console.log("Aktualny indeks:", currentVerbIndex);
+            console.log("Liczba niepoprawnych słów:", incorrectVerbs.length);
+            if (incorrectVerbs.length > 0) {
+                console.log("Niepoprawne słowa:", incorrectVerbs.map(v => v.polish).join(", "));
+            }
+            
+            // Liczniki poprawnych odpowiedzi
+            console.log("Liczniki poprawnych odpowiedzi:");
+            for (const [word, count] of Object.entries(correctAnswersTracker)) {
+                if (count > 0) {
+                    const verbObj = currentVerbs.find(v => v.infinitive === word) || 
+                                    incorrectVerbs.find(v => v.infinitive === word) ||
+                                    allBlockWords.find(v => v.infinitive === word);
+                    const polish = verbObj ? verbObj.polish : '(nieznane)';
+                    console.log(`- ${polish} (${word}): ${count}/2`);
+                }
+            }
+              console.log("===========================");
+        }
+        
+        // Funkcja walidująca listę niepoprawnych słów
+        function validateIncorrectVerbs() {
+            console.log("Rozpoczynam walidację listy niepoprawnych słów...");
+            console.log("Początkowa liczba słów:", incorrectVerbs.length);
+            
+            if (incorrectVerbs.length === 0) {
+                console.log("Lista jest pusta, nie ma nic do walidacji.");
+                return 0;
+            }
+            
+            // Sprawdzenie, czy nie ma duplikatów
+            const uniqueVerbs = [];
+            const duplicates = [];
+            const uniqueInfinitives = new Set();
+            
+            for (const verb of incorrectVerbs) {
+                if (uniqueInfinitives.has(verb.infinitive)) {
+                    duplicates.push(verb);
+                } else {
+                    uniqueInfinitives.add(verb.infinitive);
+                    uniqueVerbs.push(verb);
+                }
+            }
+            
+            if (duplicates.length > 0) {
+                console.error("UWAGA: Wykryto duplikaty na liście niepoprawnych słów!");
+                console.error("Duplikaty:", duplicates.map(v => `${v.polish} (${v.infinitive})`).join(", "));
+                
+                // Usunięcie duplikatów
+                incorrectVerbs = uniqueVerbs;
+                console.log("Usunięto duplikaty, aktualna liczba słów:", incorrectVerbs.length);
+            }
+            
+            // Sprawdzenie, czy wszystkie słowa mają poprawną strukturę
+            const invalidVerbs = incorrectVerbs.filter(v => 
+                !v.infinitive || !v.preterite || !v.perfect || !v.polish
+            );
+            
+            if (invalidVerbs.length > 0) {
+                console.error("UWAGA: Wykryto niepoprawne słowa na liście niepoprawnych!");
+                console.error("Niepoprawne słowa:", invalidVerbs);
+                
+                // Usunięcie niepoprawnych słów
+                incorrectVerbs = incorrectVerbs.filter(v => 
+                    v.infinitive && v.preterite && v.perfect && v.polish
+                );
+                console.log("Usunięto niepoprawne słowa, aktualna liczba słów:", incorrectVerbs.length);
+            }
+            
+            // Sprawdź, czy wszystkie słowa z oryginalnego bloku są w puli
+            if (allBlockWords.length > 0 && incorrectVerbs.length < allBlockWords.length) {
+                console.warn("UWAGA: Brakuje słów w liście niepoprawnych! Naprawiam...");
+                
+                // Znajdź brakujące słowa
+                const incorrectVerbsInfinitives = incorrectVerbs.map(v => v.infinitive);
+                const missingWords = allBlockWords.filter(w => !incorrectVerbsInfinitives.includes(w.infinitive));
+                
+                if (missingWords.length > 0) {
+                    console.warn("Brakujące słowa:", missingWords.map(w => `${w.polish} (${w.infinitive})`).join(", "));
+                    
+                    // Dodaj brakujące słowa do listy niepoprawnych
+                    console.log("Dodaję brakujące słowa do listy niepoprawnych");
+                    incorrectVerbs = incorrectVerbs.concat(JSON.parse(JSON.stringify(missingWords)));
+                    console.log("Po dodaniu brakujących słów, liczba słów:", incorrectVerbs.length);
+                }
+            }
+            
+            // Logowanie każdego słowa po walidacji dla weryfikacji
+            console.log("Stan listy po walidacji:");
+            incorrectVerbs.forEach((verb, idx) => {
+                console.log(`${idx + 1}. ${verb.polish} (${verb.infinitive}, ${verb.preterite}, ${verb.perfect})`);
+            });
+            
+            console.log("Walidacja zakończona. Finalna liczba słów:", incorrectVerbs.length);
+            return incorrectVerbs.length;
+        }
+    </script>
+</body>
+</html>
